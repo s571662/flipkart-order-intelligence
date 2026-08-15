@@ -56,49 +56,47 @@ This project demonstrates how machine learning can be used to:
 
 ```text
 
-&#x20;                   E-COMMERCE ORDER
+                  E-COMMERCE ORDER
+                          │
 
-&#x20;                          │
+            ┌─────────────┴─────────────┐
 
-&#x20;            ┌─────────────┴─────────────┐
+            │                           │
 
-&#x20;            │                           │
+            ▼                           ▼
 
-&#x20;            ▼                           ▼
+      Product Image                Order Data
 
-&#x20;      Product Image                Order Data
+            │                           │
 
-&#x20;            │                           │
+            ▼                           ▼
 
-&#x20;            ▼                           ▼
+       ResNet-18                 Return Risk Model
 
-&#x20;       ResNet-18                 Return Risk Model
+            │                           │
 
-&#x20;            │                           │
+            ▼                           ▼
 
-&#x20;            ▼                           ▼
+    Product Classification       Return Probability
 
-&#x20;    Product Classification       Return Probability
+            │                           │
 
-&#x20;            │                           │
+            └─────────────┬─────────────┘
 
-&#x20;            └─────────────┬─────────────┘
+                          │
 
-&#x20;                          │
+                          ▼
 
-&#x20;                          ▼
+                ORDER INTELLIGENCE
 
-&#x20;                ORDER INTELLIGENCE
+                         │
 
-&#x20;                          │
+            ┌─────────────┴─────────────┐
+            │                           │
 
-&#x20;            ┌─────────────┴─────────────┐
+            ▼                           ▼
 
-&#x20;            │                           │
+      Product Class              Return Risk
 
-&#x20;            ▼                           ▼
-
-&#x20;      Product Class              Return Risk
-
-&#x20;      Confidence                 HIGH / LOW
+      Confidence                 HIGH / LOW
 
