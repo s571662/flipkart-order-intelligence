@@ -1,0 +1,7 @@
+For prepaid orders, approved refunds are generally returned to the original payment method used when the order was placed.
+
+Refund processing begins after the returned product is received and successfully passes the applicable quality check.
+
+After the refund is initiated, the time required for the amount to appear in the customer's account may vary depending on the bank, card issuer, UPI provider, or wallet provider.
+
+If a refund cannot be processed to the original payment method, customer support may request an alternative eligible refund method.

@@ -1,0 +1,7 @@
+Customers may cancel an order before it has been shipped, provided the cancellation option is still available for that order.
+
+Once an order has been shipped, cancellation may no longer be available and the customer may need to follow the applicable return process after delivery.
+
+For prepaid orders that are successfully cancelled, the refund will be initiated to the original payment method.
+
+Cancellation availability may depend on the order status, product type, and fulfillment stage at the time the cancellation request is submitted.

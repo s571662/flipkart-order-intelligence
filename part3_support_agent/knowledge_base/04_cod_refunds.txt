@@ -1,0 +1,7 @@
+For Cash on Delivery (COD) orders, approved refunds are processed after the returned product passes the required quality check.
+
+Customers may be asked to provide valid bank account or supported payment details so the refund can be transferred electronically.
+
+Refund processing begins after return verification, and the time required for the refunded amount to appear may depend on the customer's bank or payment provider.
+
+If the returned item fails the quality check or does not satisfy the applicable return policy, the refund may be declined.

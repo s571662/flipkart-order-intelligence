@@ -1,0 +1,7 @@
+Approved refunds are initiated after the returned product is received and successfully passes the applicable quality and eligibility checks.
+
+The time required for the refunded amount to appear in the customer's account may vary depending on the original payment method, bank, card issuer, UPI provider, or wallet provider.
+
+Customers should allow the normal processing period after refund initiation before reporting a delayed refund.
+
+If a refund has been initiated but is not received within the expected processing period, the customer should contact support with the relevant order and refund details for further investigation.
