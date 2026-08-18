@@ -100,3 +100,73 @@ This project demonstrates how machine learning can be used to:
 
       Confidence                 HIGH / LOW
 
+## ✨ Features
+
+- Product classification using ResNet-18
+- Fashion-MNIST based product categories
+- Return-risk prediction using tabular customer/order data
+- Probability-based return-risk scoring
+- Configurable return-risk threshold
+- Combined image + tabular ML prediction pipeline
+- Command-line prediction interface
+- PyTorch model saved as a Git LFS artifact
+- Reproducible Python environment using `requirements.txt`
+
+---
+
+## 🛠️ Tech Stack
+
+### Programming
+- Python
+
+### Machine Learning
+- Scikit-learn
+- PyTorch
+- Torchvision
+
+### Data Processing
+- Pandas
+- NumPy
+
+### Computer Vision
+- PIL / Pillow
+- ResNet-18
+- Fashion-MNIST
+
+### Model Persistence
+- Joblib
+- PyTorch `.pt` model
+- Git LFS
+
+---
+
+## 📁 Project Structure
+
+```text
+flipkart-order-intelligence/
+│
+├── data/
+│   └── sample_images/
+│       └── test_image.png
+│
+├── models/
+│   ├── product_classifier.pt
+│   ├── return_risk_model.pkl
+│   └── return_risk_threshold.txt
+│
+├── part1_return_risk/
+│   ├── generate_orders.py
+│   ├── inspect_data.py
+│   ├── orders_dataset.csv
+│   └── train_return_risk.py
+│
+├── part2_image_classifier/
+│   └── train_product_classifier.py
+│
+├── part3_prediction/
+│   └── predict.py
+│
+├── .gitattributes
+├── .gitignore
+├── README.md
+└── requirements.txt

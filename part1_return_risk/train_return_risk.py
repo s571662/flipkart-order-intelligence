@@ -1,40 +1,30 @@
 from pathlib import Path
 
-import pandas as pd
-import numpy as np
 import joblib
+import numpy as np
+import pandas as pd
 
-from sklearn.model_selection import train_test_split
 from sklearn.compose import ColumnTransformer
-from sklearn.pipeline import Pipeline
-from sklearn.impute import SimpleImputer
-from sklearn.preprocessing import OneHotEncoder, StandardScaler
 from sklearn.dummy import DummyClassifier
-from sklearn.metrics import accuracy_score, f1_score, classification_report
-from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
 from sklearn.inspection import permutation_importance
-
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import GridSearchCV, StratifiedKFold
-
-from sklearn.ensemble import RandomForestClassifier
-
-from sklearn.model_selection import (
-    train_test_split,
-    GridSearchCV,
-    StratifiedKFold,
-)
-
-
-
+from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import (
     accuracy_score,
+    classification_report,
     f1_score,
     precision_score,
     recall_score,
     roc_auc_score,
-    classification_report,
 )
+from sklearn.model_selection import (
+    GridSearchCV,
+    StratifiedKFold,
+    train_test_split,
+)
+from sklearn.pipeline import Pipeline
+from sklearn.preprocessing import OneHotEncoder, StandardScaler
 
 
 # ---------------------------------------------------------
@@ -177,11 +167,6 @@ print("\nPreprocessing complete.")
 print(
     "Training transformed shape:",
     X_train_transformed.shape,
-)
-
-print(
-    "Test transformed shape:",
-    X_test_transformed.shape,
 )
 
 print(
@@ -378,6 +363,34 @@ print(f"F1:        {best_threshold_f1:.4f}")
 print(f"Recall:    {best_threshold_recall:.4f}")
 print(f"Precision: {best_threshold_precision:.4f}")
 
+recall_improvement = (
+    best_threshold_recall - logistic_recall
+)
+
+precision_change = (
+    best_threshold_precision - logistic_precision
+)
+
+print("\nThreshold trade-off:")
+print(
+    f"Recall improved by "
+    f"{recall_improvement * 100:.2f} percentage points "
+    f"({logistic_recall:.4f} -> {best_threshold_recall:.4f})."
+)
+
+print(
+    f"Precision changed by "
+    f"{precision_change * 100:.2f} percentage points "
+    f"({logistic_precision:.4f} -> {best_threshold_precision:.4f})."
+)
+
+print(
+    "Business interpretation: lowering the threshold catches "
+    "more orders that may be returned, reducing false negatives, "
+    "but accepts more false positives and therefore slightly "
+    "reduces precision."
+)
+
 # ---------------------------------------------------------
 # Random Forest Pipeline
 # ---------------------------------------------------------
@@ -532,6 +545,62 @@ print(
 )
 
 # ---------------------------------------------------------
+# Model Comparison
+# ---------------------------------------------------------
+
+print("\n" + "=" * 60)
+print("MODEL COMPARISON")
+print("=" * 60)
+
+comparison_df = pd.DataFrame({
+    "Model": [
+        "Dummy Classifier",
+        "Logistic Regression",
+        "Random Forest"
+    ],
+    "Accuracy": [
+        dummy_accuracy,
+        logistic_accuracy,
+        rf_test_accuracy
+    ],
+    "F1": [
+        dummy_f1,
+        logistic_f1,
+        rf_test_f1
+    ],
+    "Recall": [
+        0.0,
+        logistic_recall,
+        rf_test_recall
+    ],
+    "Precision": [
+        0.0,
+        logistic_precision,
+        rf_test_precision
+    ],
+    "ROC-AUC": [
+        np.nan,
+        logistic_roc_auc,
+        rf_test_roc_auc
+    ]
+})
+
+print(
+    comparison_df.to_string(
+        index=False,
+        formatters={
+            "Accuracy": "{:.4f}".format,
+            "F1": "{:.4f}".format,
+            "Recall": "{:.4f}".format,
+            "Precision": "{:.4f}".format,
+            "ROC-AUC": lambda x: (
+                "N/A" if pd.isna(x) else f"{x:.4f}"
+            )
+        }
+    )
+)
+
+# ---------------------------------------------------------
 # Random Forest Feature Importance
 # ---------------------------------------------------------
 
@@ -609,41 +678,133 @@ print(
 # Compare Impurity vs Permutation Importance
 # ---------------------------------------------------------
 
-top5_impurity = importance_df.head(5).copy()
+# Aggregate one-hot encoded feature importance
+# back to the original feature level.
 
-top5_impurity["original_feature"] = (
-    top5_impurity["feature"]
-    .str.replace("numeric__", "", regex=False)
-    .str.replace("categorical__", "", regex=False)
+aggregated_importance = []
+
+for feature in numeric_features:
+    mask = importance_df["feature"].str.contains(
+        f"numeric__{feature}",
+        regex=False
+    )
+
+    importance_value = importance_df.loc[
+        mask, "importance"
+    ].sum()
+
+    aggregated_importance.append({
+        "feature": feature,
+        "impurity_importance": importance_value
+    })
+
+
+for feature in categorical_features:
+    mask = importance_df["feature"].str.contains(
+        f"categorical__{feature}_",
+        regex=False
+    )
+
+    importance_value = importance_df.loc[
+        mask, "importance"
+    ].sum()
+
+    aggregated_importance.append({
+        "feature": feature,
+        "impurity_importance": importance_value
+    })
+
+
+aggregated_importance_df = pd.DataFrame(
+    aggregated_importance
 )
 
-comparison = top5_impurity[
-    ["feature", "importance"]
-].rename(
-    columns={
-        "feature": "impurity_feature",
-        "importance": "impurity_importance"
-    }
-)
-
-comparison["permutation_importance"] = (
-    comparison["impurity_feature"]
-    .str.replace("numeric__", "", regex=False)
-    .str.replace("categorical__", "", regex=False)
-    .map(
-        permutation_df.set_index("feature")[
-            "permutation_importance"
-        ]
+aggregated_importance_df = (
+    aggregated_importance_df
+    .sort_values(
+        "impurity_importance",
+        ascending=False
     )
 )
 
+
+# Merge with permutation importance
+comparison = aggregated_importance_df.merge(
+    permutation_df,
+    on="feature",
+    how="left"
+)
+
+comparison = comparison.rename(
+    columns={
+        "permutation_importance":
+            "permutation_importance"
+    }
+)
+
+
 print("\n" + "=" * 60)
-print("TOP-5 IMPURITY VS PERMUTATION IMPORTANCE")
+print("IMPURITY VS PERMUTATION IMPORTANCE")
 print("=" * 60)
 
 print(
-    comparison.to_string(index=False)
+    comparison.to_string(
+        index=False
+    )
 )
+
+
+# ---------------------------------------------------------
+# Top 5 Original Features
+# ---------------------------------------------------------
+print("\nFeature importance interpretation:")
+
+print(
+    "payment_method is the strongest feature under both methods, "
+    "indicating that payment behavior carries meaningful signal "
+    "for return risk."
+)
+
+print(
+    "delivery_distance_km appears highly important under "
+    "Random Forest impurity importance but has approximately "
+    "zero permutation importance."
+)
+
+print(
+    "This large drop suggests delivery_distance_km is being "
+    "overrated by impurity-based importance rather than providing "
+    "meaningful predictive signal on unseen data."
+)
+
+print(
+    "Impurity-based importance can overrate noisy continuous "
+    "features because continuous variables provide many possible "
+    "split points, increasing their chance of producing apparently "
+    "useful tree splits even when their true predictive value is low."
+)
+top5_features = (
+    comparison
+    .sort_values(
+        "impurity_importance",
+        ascending=False
+    )
+    .head(5)
+)
+
+print("\n" + "=" * 60)
+print("TOP 5 MOST IMPORTANT FEATURES")
+print("=" * 60)
+
+for rank, (_, row) in enumerate(
+    top5_features.iterrows(),
+    start=1
+):
+    print(
+        f"{rank}. {row['feature']} "
+        f"(impurity={row['impurity_importance']:.4f}, "
+        f"permutation={row['permutation_importance']:.4f})"
+    )
 
 # ---------------------------------------------------------
 # Subgroup Analysis
@@ -714,6 +875,51 @@ print("=" * 60)
 
 print(
     payment_results.to_string(index=False)
+)
+
+# ---------------------------------------------------------
+# Identify Weakest Subgroups
+# ---------------------------------------------------------
+
+weakest_product_group = product_results.loc[
+    product_results["recall"].idxmin()
+]
+
+weakest_payment_group = payment_results.loc[
+    payment_results["recall"].idxmin()
+]
+
+print("\n" + "=" * 60)
+print("SUBGROUP ANALYSIS SUMMARY")
+print("=" * 60)
+
+print(
+    f"Weakest product category by recall: "
+    f"{weakest_product_group['product_category']} "
+    f"(recall={weakest_product_group['recall']:.4f})"
+)
+
+print(
+    f"Weakest payment method by recall: "
+    f"{weakest_payment_group['payment_method']} "
+    f"(recall={weakest_payment_group['recall']:.4f})"
+)
+
+print(
+    "\nInterpretation: Overall model performance hides "
+    "substantial differences between subgroups."
+)
+
+print(
+    "Specific next step: evaluate a lower decision threshold "
+    "for Prepaid_Card orders to improve recall, while measuring "
+    "the resulting precision trade-off separately for that subgroup."
+)
+
+print(
+    "For Electronics orders, investigate a category-specific "
+    "threshold or additional category-relevant features to improve "
+    "return detection."
 )
 
 # ---------------------------------------------------------
