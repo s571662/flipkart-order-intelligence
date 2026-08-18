@@ -75,7 +75,26 @@ for index, name in enumerate(class_names):
     
     
 from sklearn.model_selection import train_test_split
+# ---------------------------------------------------------
+# Export real test-split sample images for Part 3
+# ---------------------------------------------------------
 
+os.makedirs("data/sample_images", exist_ok=True)
+
+sample_indices = [0, 1, 2, 3, 4]
+
+print("\nExporting sample test images...")
+
+for idx in sample_indices:
+    image, label = test_dataset[idx]
+
+    safe_name = class_names[label].lower().replace("/", "_").replace(" ", "_")
+
+    output_path = f"data/sample_images/{idx:02d}_{safe_name}.png"
+
+    image.save(output_path)
+
+    print(f"Saved: {output_path} | True label: {class_names[label]}")
 # ---------------------------------------------------------
 # Stratified train/validation split
 # ---------------------------------------------------------
@@ -650,35 +669,6 @@ torch.save(
 
 print("Model saved successfully:")
 print(model_path)
-
-# ============================================================
-# SAVE IMAGE CLASSIFIER
-# ============================================================
-
-import os
-
-os.makedirs("models", exist_ok=True)
-
-model_path = "models/product_image_classifier.pth"
-
-torch.save({
-    "model_state_dict": model.state_dict(),
-    "class_names": [
-        "T-shirt/top",
-        "Trouser",
-        "Pullover",
-        "Dress",
-        "Coat",
-        "Sandal",
-        "Shirt",
-        "Sneaker",
-        "Bag",
-        "Ankle boot"
-    ],
-    "num_classes": 10,
-    "input_size": 224,
-    "best_val_accuracy": best_val_accuracy
-}, model_path)
 
 print("\n============================================================")
 print("MODEL SAVED")
