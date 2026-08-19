@@ -1,0 +1,150 @@
+FLIPKART ORDER INTELLIGENCE & AI SUPPORT AGENT
+===============================================
+
+This demo shows the main capabilities of the end-to-end system.
+
+1. POLICY RAG
+-------------
+
+User:
+What is the return policy for electronics?
+
+Agent:
+Electronics products may be returned within 7 days of delivery if the item is defective, damaged, or not as described. Return eligibility is determined according to the policy applicable to the specific product and the reason for the return request.
+
+Source:
+policy_kb
+
+Grounded:
+True
+
+Retrieval confidence:
+0.6833
+
+
+2. RETURN-RISK PREDICTION
+-------------------------
+
+Example order:
+price_inr: 2499
+delivery_distance_km: 12.5
+customer_tenure_days: 450
+delivery_days: 5
+discount_pct: 20
+num_previous_orders: 8
+num_previous_returns: 2
+rating_given: 4
+payment_method: COD
+product_category: Footwear
+is_weekend_order: 1
+
+User:
+What is the return risk for this order?
+
+Agent:
+Return probability is 57.05%. Risk bucket: Medium.
+
+Source:
+return_risk_model
+
+
+3. PRODUCT IMAGE CLASSIFICATION
+-------------------------------
+
+Image:
+data/sample_images/00_ankle_boot.png
+
+User:
+Classify this product image.
+
+Agent:
+Predicted product category: Ankle boot. Confidence: 96.75%.
+
+Source:
+image_classifier
+
+
+4. RAG GROUNDEDNESS GUARDRAIL
+-----------------------------
+
+User:
+What is the return policy for helicopters?
+
+Result:
+grounded: False
+
+Groundedness threshold:
+0.60
+
+The system rejects the retrieved evidence as insufficient instead of treating the result as a supported product-policy answer.
+
+
+5. PROMPT-INJECTION GUARDRAIL
+-----------------------------
+
+A suspicious query attempting to override the support assistant's rules is detected before downstream model/tool execution.
+
+Result:
+source: input_guardrail
+blocked: True
+
+
+6. CONVERSATION STATE
+---------------------
+
+Current order:
+1523
+
+User:
+What about its delivery?
+
+Agent:
+You are asking about order 1523. The order ID was preserved from the current conversation state.
+
+Source:
+conversation_state
+
+
+7. LANGGRAPH WORKFLOW
+---------------------
+
+The support agent routes requests between:
+
+- Policy RAG
+- Return-risk prediction
+- Product-image classification
+- Conversation/order context
+- Input safety guardrails
+
+The final response passes through a deterministic MOCK_LLM layer so the project can be evaluated without external API keys.
+
+
+8. AUTOMATED TESTING
+--------------------
+
+Command:
+
+python -m pytest -q
+
+Result:
+
+4 passed
+
+The automated tests verify:
+
+- Policy RAG routing
+- Return-risk model integration
+- Product-image classifier integration
+- Conversation-state handling
+
+
+FINAL STATUS
+------------
+
+Part 1 - Return-Risk Prediction: PASS
+Part 2 - Product Image Classification: PASS
+Part 3 - LangGraph AI Support Agent: PASS
+RAG / FAISS Retrieval: PASS
+Safety Guardrails: PASS
+Conversation State: PASS
+Automated Tests: 4 PASSED
