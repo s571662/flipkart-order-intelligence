@@ -484,6 +484,45 @@ print("\nBest validation accuracy:")
 print(f"{best_val_accuracy:.4f}")
 
 # ---------------------------------------------------------
+# Fine-tuning decision
+# ---------------------------------------------------------
+
+fine_tuning_threshold = 0.80
+
+print("\n" + "=" * 60)
+print("FINE-TUNING DECISION")
+print("=" * 60)
+
+print(
+    f"Feature-extraction validation accuracy: "
+    f"{best_val_accuracy * 100:.2f}%"
+)
+
+print(
+    f"Fine-tuning trigger threshold: "
+    f"{fine_tuning_threshold * 100:.2f}%"
+)
+
+if best_val_accuracy < fine_tuning_threshold:
+    print(
+        "Fine-tuning needed: YES - validation accuracy "
+        "is below the 80% threshold."
+    )
+else:
+    print(
+        "Fine-tuning needed: NO - feature extraction "
+        "already exceeds the 80% validation threshold."
+    )
+    print(
+        "Before fine-tuning validation accuracy: "
+        f"{best_val_accuracy * 100:.2f}%"
+    )
+    print(
+        "After fine-tuning validation accuracy: "
+        "N/A because fine-tuning was not required."
+    )
+
+# ---------------------------------------------------------
 # Restore best validation classifier
 # ---------------------------------------------------------
 
