@@ -69,8 +69,9 @@ def build_embeddings():
     chunks = build_policy_chunks()
 
     model = SentenceTransformer(
-        EMBEDDING_MODEL_NAME
-    )
+    EMBEDDING_MODEL_NAME,
+    local_files_only=True,
+)
 
     texts = [
         chunk["text"]
@@ -104,7 +105,8 @@ def retrieve_policy(query: str, top_k: int = 3):
     chunks, _, index = build_faiss_index()
 
     model = SentenceTransformer(
-        EMBEDDING_MODEL_NAME
+        EMBEDDING_MODEL_NAME,
+        local_files_only=True,
     )
 
     query_embedding = model.encode(
