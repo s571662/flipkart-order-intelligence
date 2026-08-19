@@ -1,0 +1,7 @@
+Reverse pickup may be available for eligible return requests when the delivery location is serviceable by the assigned logistics partner.
+
+The product should match the approved return request and include required accessories, tags, manuals, and packaging when applicable.
+
+A reverse pickup may be rejected if the item is not eligible under the return policy, the product condition does not match the return reason, required components are missing, or the pickup address is outside the supported service area.
+
+If reverse pickup is unavailable, customer support may provide an alternative return method when permitted by the applicable policy.

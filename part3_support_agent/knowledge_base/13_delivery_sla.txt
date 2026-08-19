@@ -1,0 +1,7 @@
+Standard delivery orders are generally expected to arrive within 3 to 7 business days, depending on the destination, product availability, and fulfillment location.
+
+Express or priority delivery orders may have shorter expected delivery windows when that service is available for the selected product and destination.
+
+If an order is not delivered within its expected delivery window, the customer should check the latest tracking update and contact support if there is no recent movement or confirmed delivery exception.
+
+Delivery timelines are estimates and may be affected by weather, carrier delays, regional restrictions, holidays, or other operational disruptions.
