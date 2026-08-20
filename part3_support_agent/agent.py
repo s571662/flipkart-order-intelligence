@@ -16,6 +16,7 @@ class AgentState(TypedDict, total=False):
     intent: str
     routing_basis: str
     response: dict
+    final_response: dict
     order_features: dict
     image_path: str
     current_order_id: Optional[str]
@@ -255,9 +256,21 @@ def response_node(state: AgentState) -> AgentState:
         "final_answer": llm_result["answer"],
         "llm_mode": "MOCK_LLM",
     }
+    if intent in {
+        "policy",
+        "return_risk",
+        "image",
+    }:
+        state["final_response"] = {
+            "answer": llm_result["answer"],
+            "source": current_response["source"],
+            "confidence": current_response.get(
+                "confidence",
+                0.0,
+            ),
+        }
 
     return state
-
    
 def choose_route(state: AgentState):
     return state["intent"]

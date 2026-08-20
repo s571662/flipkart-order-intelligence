@@ -33,6 +33,15 @@ def print_case(title: str, user_query: str, result: dict):
             default=str,
         )
     )
+    if result.get("final_response") is not None:
+        print("Final structured response:")
+        print(
+            json.dumps(
+                result["final_response"],
+                indent=2,
+                default=str,
+            )
+        )
     print()
 
 

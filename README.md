@@ -484,7 +484,7 @@ Recall@3 = relevant retrieved documents / number of relevant documents
 
 Saved evaluation evidence:
 
-`transcripts/retrieval_evaluation.txt`
+[Retrieval evaluation evidence](transcripts/retrieval_evaluation.txt)
 
 Run:
 
@@ -790,7 +790,7 @@ python -m part3_support_agent.run_transcripts > transcripts/graded_transcripts.t
 
 Saved evidence:
 
-`transcripts/graded_transcripts.txt`
+[Graded agent transcripts](transcripts/graded_transcripts.txt)
 
 The generated evidence contains at least 8 required cases:
 
